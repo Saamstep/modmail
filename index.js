@@ -77,7 +77,9 @@ client.on('message', message => {
     let guild = client.guilds.get(`${client.ConfigService.config.guildID}`);
     if (guild) {
       let channel = guild.channels.get(`${client.ConfigService.config.channel.modmail}`);
-      channel.send({ embed });
+      channel.send({ embed }).then(m => {
+        m.react('✅');
+      });
       client.console(`Recieved ModMail from ${message.author.tag} and sent it to the mod channel.`);
     }
   }
