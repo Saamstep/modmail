@@ -1,0 +1,15 @@
+{
+  "prefix": "",
+  "token": "", 
+  "ownerid": "",  
+  "defaultGame": "for DMs",
+  "debug": false,
+  "guildID": "",  
+  "role": {
+    "admin": ""
+  },
+  "channel": {
+    "log": "",
+    "modmail": ""
+  }
+}
