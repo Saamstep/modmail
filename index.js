@@ -51,7 +51,7 @@ client.on('message', message => {
   if (message.channel.type == 'dm' && !message.author.bot) {
     const embed = {
       title: `From: ${message.author.tag}`,
-      description: `${message.content}`,
+      description: `${message.content}\n\n**Quick Reply: <@${message.author.id}> **`,
       color: 11929975,
       timestamp: Date.now(),
       footer: {
@@ -70,9 +70,7 @@ client.on('message', message => {
     // >> For now these values need to be modified manually :(
     let guild = client.guilds.get(`${client.ConfigService.config.guildID}`);
     if (guild) {
-      let channel = guild.channels.get(
-        `${client.ConfigService.config.channel.modmail}`
-      );
+      let channel = guild.channels.get(`${client.ConfigService.config.channel.modmail}`);
       channel.send({ embed });
     }
   }

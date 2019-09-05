@@ -25,11 +25,7 @@ exports.run = async function(client, member, message) {
         return;
       } else {
         let cmdfiles = require(`../commands/${file}`);
-        CommandList.addCommand(
-          file.toString().replace('.js', ''),
-          false,
-          cmdfiles.description
-        );
+        CommandList.addCommand(file.toString().replace('.js', ''), false, cmdfiles.description);
       }
     });
   } catch (e) {
@@ -49,17 +45,12 @@ exports.run = async function(client, member, message) {
         return;
       } else {
         let cmdfiles = require(`../commands/cc/${file}`);
-        CommandList.addCommand(
-          file.toString().replace('.js', ''),
-          true,
-          cmdfiles.description
-        );
+        CommandList.addCommand(file.toString().replace('.js', ''), true, cmdfiles.description);
       }
     });
   } catch (e) {
     console.error(
-      "No custom commands file directory exists, please create a folder in the commands directory called 'cc'"
-        .red
+      "No custom commands file directory exists, please create a folder in the commands directory called 'cc'".red
     );
   }
 
@@ -79,28 +70,16 @@ exports.run = async function(client, member, message) {
     console.log('\nAll Discord systems operational!\n'.green.dim);
   } else {
     console.log(
-      'There seems to be an error with some of the Discord Servers. Double check https://status.discordapp.com/ \n'
-        .red
+      'There seems to be an error with some of the Discord Servers. Double check https://status.discordapp.com/ \n'.red
     );
   }
   // End discord status
   const cmds = await fs.readdir(commandsFolder);
   const ccmds = await fs.readdir(ccFolder);
   console.log(
-    'Loading '.green +
-      cmds.length +
-      ' commands'.green +
-      ' and '.green +
-      ccmds.length +
-      ' custom commands'.green
+    'Loading '.green + cmds.length + ' commands'.green + ' and '.green + ccmds.length + ' custom commands'.green
   );
-  console.log(
-    `ModMail` +
-      ' online!\n'.green.reset +
-      'Connected to: '.cyan +
-      guildNames.white +
-      ' guild(s)'.cyan
-  );
+  console.log(`ModMail` + ' online!\n'.green.reset + 'Connected to: '.cyan + guildNames.white + ' guild(s)'.cyan);
   console.log('Watching for modmail...'.green);
   if (ConfigService.config.debug === 'on') {
     console.log('\n');
