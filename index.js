@@ -51,7 +51,7 @@ client.on('message', message => {
   if (message.channel.type == 'dm' && !message.author.bot) {
     const embed = {
       title: `From: ${message.author.tag}`,
-      description: `${message.content}\n\n**Quick Reply: <@${message.author.id}> **`,
+      description: `${message.content}`,
       color: 11929975,
       timestamp: Date.now(),
       footer: {
@@ -64,7 +64,13 @@ client.on('message', message => {
       author: {
         name: `New ModMail message recieved!`,
         icon_url: `${message.author.avatarURL}`
-      }
+      },
+      fields: [
+        {
+          name: '\nReply:',
+          value: `<@${message.author.id}>`
+        }
+      ]
     };
 
     // >> For now these values need to be modified manually :(
@@ -72,6 +78,7 @@ client.on('message', message => {
     if (guild) {
       let channel = guild.channels.get(`${client.ConfigService.config.channel.modmail}`);
       channel.send({ embed });
+      client.console(`Recieved ModMail from ${message.author.tag} and sent it to the mod channel.`);
     }
   }
 
