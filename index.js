@@ -73,7 +73,7 @@ client.on("message", message => {
           }
         });
         let closeReason = message.content.slice(6) || "No reason";
-        client.log("Ticket Closed", `${message.author}'s  support ticket was closed for reason \`\`\`${closeReason}\`\`\``, 3447003, message, client);
+        client.log("Ticket Closed", `<@${message.channel.name}>'s  support ticket was closed for reason \`\`\`${closeReason}\`\`\``, 3447003, message, client);
         message.channel.delete();
         return;
         break;
