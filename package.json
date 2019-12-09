@@ -1,6 +1,6 @@
 {
   "name": "modmail",
-  "version": "2.1.0",
+  "version": "2.2.0",
   "description": "Made by Saamstep with help from [anidiotsguide](http://anidiots.guide), SpyderHunter03, nullpointer128, and the Discord.JS Discord community!",
   "main": "index.js",
   "dependencies": {
