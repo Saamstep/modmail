@@ -1,5 +1,5 @@
 module.exports = function logEvent(event, reason, color, message, client) {
-  const ConfigService = require('../config.js');
+  const ConfigService = require("../config.js");
 
   let now = new Date();
 
@@ -12,25 +12,21 @@ module.exports = function logEvent(event, reason, color, message, client) {
     },
     author: {
       name: `${event}`,
-      icon_url: 'http://chittagongit.com/download/13059'
+      icon_url: "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcSLL-4ewZu2ZdHdT3QV63N7SmhS9Qz_TQ4Bkh6b33GZNAh2g7Cc&s"
     },
     fields: [
       {
-        name: 'Reason',
+        name: "Reason",
         value: `${reason}`
       },
       {
-        name: 'Executed By',
+        name: "Executed By",
         value: `${message.author}`
       }
     ]
   };
 
-  let guild = message.guild;
-
-  let logchannel = guild.channels.find(
-    'name',
-    `${client.ConfigService.config.channel.log}`
-  );
+  let guild = client.guilds.get(`${client.ConfigService.config.guildID}`);
+  let logchannel = guild.channels.find(n => n.name == `${client.ConfigService.config.channel.log}`);
   logchannel.send({ embed });
 };
