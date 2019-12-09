@@ -2,6 +2,7 @@ const Discord = require("discord.js");
 const client = new Discord.Client({ autoReconnect: true });
 const ConfigService = require("./config.js");
 const fs = require("fs");
+const schedule = require("node-schedule");
 
 //modules init.
 client.isAdmin = require("./modules/isAdmin.js");
@@ -50,6 +51,21 @@ let admin = "";
 client.on("ready", () => {
   guild = client.guilds.get(`${client.ConfigService.config.guildID}`);
   admin = guild.roles.find(r => r.name == `${client.ConfigService.config.role.admin}`);
+  let mailCategory = guild.channels.find(category => category.name == `${client.ConfigService.config.channel.categoryName}` && category.type == "category");
+  schedule.scheduleJob("0 17 * * *", function() {
+    if (mailCategory.children.size > 0) {
+      let msg = `There are ${mailCategory.children.size} unanswered tickets!`;
+      if (mailCategory.children.size == 1) msg = `There is ${mailCategory.children.size} unanswered ticket!`;
+      guild.channels
+        .find(ch => ch.name == `${client.ConfigService.config.channel.log}`)
+        .send("@everyone", {
+          embed: {
+            color: 3447003,
+            description: msg
+          }
+        });
+    }
+  });
 });
 
 client.on("message", message => {
@@ -127,7 +143,7 @@ client.on("message", message => {
         let category = guild.channels.find(c => c.name == `${client.ConfigService.config.channel.categoryName}` && c.type == "category");
         await channel.setParent(category.id);
         await channel.lockPermissions();
-        await channel.send("ateveryone\n" + msgTemplate);
+        await channel.send("@everyone\n" + msgTemplate);
         await message.author.send({
           embed: {
             color: 3447003,
