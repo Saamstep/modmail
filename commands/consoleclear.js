@@ -20,4 +20,9 @@ exports.run = (client, message, args) => {
 	}
 };
 
-exports.description = 'Lets the owner clear the console.';
+exports.cmd = {
+  enabled: true,
+  category: 'Admin',
+  level: 2,
+  description: 'Clears bot bot console.'
+};

@@ -3,6 +3,7 @@ const client = new Discord.Client({ autoReconnect: true });
 const ConfigService = require("./config.js");
 const fs = require("fs");
 const schedule = require("node-schedule");
+const Enmap = require("enmap");
 
 //modules init.
 client.isAdmin = require("./modules/isAdmin.js");
@@ -57,7 +58,7 @@ client.on("ready", () => {
       let msg = `There are ${mailCategory.children.size} unanswered tickets!`;
       if (mailCategory.children.size == 1) msg = `There is ${mailCategory.children.size} unanswered ticket!`;
       guild.channels
-        .find(ch => ch.name == `${client.ConfigService.config.channel.log}`)
+        .find(ch => ch.name == `${client.ConfigService.config.channel.adminChat}`)
         .send("@everyone", {
           embed: {
             color: 3447003,
@@ -68,9 +69,44 @@ client.on("ready", () => {
   });
 });
 
+const cc = new Enmap({
+  name: "cc",
+  autoFetch: true,
+  fetchAll: true
+});
+
+client.ccSize = cc.size;
+
 client.on("message", message => {
   //message template for user DM and guild channel(s)
-  const msgTemplate = `[**${message.author.username}**] ` + message.content;
+  // const { embed } = `[**${message.author.username}**] ` + message.content;
+  const embed = {
+    description: `${message.content}`,
+    color: 5767016,
+    timestamp: Date.now(),
+    footer: {
+      icon_url: `${client.user.avatarURL}`
+    },
+    author: {
+      name: `New Message: ${message.author.username}`,
+      icon_url: `${message.author.avatarURL}`
+    }
+  };
+
+  //make a chatlog of the modmail discussion
+  function chatlog(message, channel, content) {
+    const format = `[${Date.now()}] [${message.author.username}#${message.author.discriminator}] ${content}\n`;
+    if (fs.existsSync(`./logs/${channel}.txt`)) {
+      fs.appendFile(`./logs/${channel}.txt`, format, err => {
+        if (err) throw err;
+        console.log(`new message: ${format}`);
+      });
+    } else {
+      fs.writeFileSync(`./logs/${channel}.txt`, format);
+      console.log(`new log made: ${format}`);
+    }
+  }
+
   //commands system
   if (message.channel.type == "text" && message.content.startsWith(client.ConfigService.config.prefix) && message.channel.parent.name == `${client.ConfigService.config.channel.categoryName}` && client.isAdmin(message.author, message, false)) {
     //create commands here
@@ -80,7 +116,7 @@ client.on("message", message => {
         .replace(`${client.ConfigService.config.prefix}`, " ")
         .trim()
     ) {
-      case "close":
+      case "close" || "CLOSE":
         let member = message.guild.members.get(message.channel.name);
         member.send({
           embed: {
@@ -90,6 +126,8 @@ client.on("message", message => {
         });
         let closeReason = message.content.slice(6) || "No reason";
         client.log("Ticket Closed", `<@${message.channel.name}>'s  support ticket was closed for reason \`\`\`${closeReason}\`\`\``, 3447003, message, client);
+        chatlog(message, message.channel.name, "[[MODMAIL CLOSED]]");
+        //make web request to hastebin server API
         message.channel.delete();
         return;
         break;
@@ -102,12 +140,19 @@ client.on("message", message => {
   if (message.channel.type == "text" && !message.author.bot && !message.content.startsWith(client.ConfigService.config.prefix) && message.channel.parent.name == `${client.ConfigService.config.channel.categoryName}`) {
     let member = message.guild.members.get(message.channel.name);
     if (message.attachments.size > 0) {
-      member.send(msgTemplate + " " + message.attachments.first().url);
+      member.send({ embed } + " " + message.attachments.first().url).then(msg => {
+        message.react("✅");
+      });
+      chatlog(message, message.channel.name, message.content + " " + message.attachments.first().url);
     } else {
       if (guild.member(message.channel.name)) {
-        member.send(msgTemplate);
+        member.send({ embed }).then(msg => {
+          message.react("✅");
+        });
+        chatlog(message, message.channel.name, message.content);
       } else {
         client.log("Invalid ModMail Channel", `Could not find user ID \`${message.channel.name}\` in guild.`, 16711747, message, client);
+        fs.unlinkSync(message.channel.name);
         message.channel.delete();
       }
     }
@@ -115,6 +160,10 @@ client.on("message", message => {
 
   // send message from user DM to modmail guild channel(s)
   if (message.channel.type == "dm" && !message.author.bot) {
+    //help command
+    if (message.content.startsWith(`${client.ConfigService.config.prefix}help`)) {
+      return require("./commands/help.js").run(client, message);
+    }
     //modmail category to house the operation
     let category = guild.channels.find(c => c.name == `${client.ConfigService.config.channel.categoryName}` && c.type == "category");
     //if the category does not exist. make it!
@@ -141,15 +190,20 @@ client.on("message", message => {
     if (!guild.channels.exists(ch => ch.name == message.author.id)) {
       guild.createChannel(`${message.author.id}`, "text").then(async channel => {
         let category = guild.channels.find(c => c.name == `${client.ConfigService.config.channel.categoryName}` && c.type == "category");
+        await channel.setTopic(`Ticket with: ${message.author.username}#${message.author.discriminator}\n<@${message.author.id}>`, "New modmail");
         await channel.setParent(category.id);
         await channel.lockPermissions();
-        await channel.send("@everyone\n" + msgTemplate);
+        await channel.send({ embed });
         await message.author.send({
           embed: {
             color: 3447003,
             description: "Created new help ticket and sent your message to the admins! To send more messages and to chat with the administrators, just text me here! Any message that the admins see will be reacted with a ✅"
           }
         });
+        await chatlog(message, channel.name, "[[TICKED STARTED]]" + " " + message.content);
+        await channel.send("@everyone\n").then(msg => {
+          msg.delete(1000);
+        });``
         await message.react("✅");
       });
       client.log("Ticket Created", `${message.author} created a new support ticket with first message as: \`\`\`${message.content}\`\`\`\n[Jump to Message](${message.url})`, 3447003, message, client);
@@ -157,11 +211,13 @@ client.on("message", message => {
       //if they got a "ticket" already send all their messages!
       let modChannel = guild.channels.find(c => c.name == message.author.id && c.type == "text");
       if (message.attachments.size > 0) {
-        modChannel.send(msgTemplate + " " + message.attachments.first().url).then(msg => {
+        chatlog(message, message.author.id, message.content + " " + message.attachments.first().url);
+        modChannel.send({ embed } + " " + message.attachments.first().url).then(msg => {
           message.react("✅");
         });
       } else {
-        modChannel.send(msgTemplate).then(msg => {
+        chatlog(message, message.author.id, message.content);
+        modChannel.send({ embed }).then(msg => {
           message.react("✅");
         });
       }
@@ -191,24 +247,67 @@ client.on("message", message => {
 
   // Regular command file manager
   try {
-    let commandFile = require(`./commands/${command}.js`);
-    commandFile.run(client, message, args);
-    message.channel.stopTyping(true);
+    cc.defer.then(() => {
+      if (cc.has(command)) {
+        return;
+      } else {
+        try {
+          let commandFile = require(`./commands/${command}.js`);
+          if (!commandFile.cmd.enabled) return client.error("This command is disabled", message);
+          /*
+            ==Levels==
+            0 - @everyone
+            1 - Mod
+            2 - Admin
+            3 - Owner only
+            */
+          function run() {
+            commandFile.run(client, message, args, cc);
+          }
+
+          switch (commandFile.cmd.level) {
+            case 0:
+              run();
+              break;
+            case 1:
+              if (client.isMod(message.author, message, client)) {
+                run();
+              }
+              break;
+            case 2:
+              if (client.isAdmin(message.author, message, true, client)) {
+                run();
+              }
+              break;
+            case 3:
+              if (client.isOwner(message, true, client)) {
+                run();
+              }
+              break;
+            default:
+              client.error("There seems to be an error with permissions... This isn't good. Make sure your Admin, Mod and Owner fields have been inputted correctly.", message);
+          }
+        } catch (e) {
+          console.error(e);
+        }
+      }
+    });
   } catch (err) {
-    if (config.debug) {
+    if (client.ConfigService.config.debug == true) {
       console.error(err);
     }
   }
 
-  // Custom command file manager
+  //New Custom Command File System
   try {
-    let commandFile = require(`./commands/cc/${command}.js`);
-    commandFile.run(client, message, args);
-  } catch (err) {
-    if (config.debug) {
-      console.error(err);
+    if (message.content.startsWith(client.ConfigService.config.prefix) && cc.has(command)) {
+      cc.defer.then(() => {
+        message.channel.send(cc.get(command));
+      });
     } else {
       return;
     }
+  } catch (e) {
+    console.error(e);
   }
 });

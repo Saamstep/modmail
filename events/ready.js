@@ -2,7 +2,6 @@ const ConfigService = require("../config.js");
 const colors = require("colors");
 const fetch = require("node-fetch");
 const commandsFolder = "./commands/";
-const ccFolder = "./commands/cc/";
 const CommandList = require("../commandList.js");
 const fs = require("fs").promises;
 
@@ -34,21 +33,6 @@ exports.run = async function(client, member, message) {
     process.exit(1);
   }
 
-  // Add custom commands to command list
-  try {
-    const customCommands = await fs.readdir(ccFolder);
-    customCommands.forEach(file => {
-      if (file.startsWith(".")) {
-        return;
-      } else {
-        let cmdfiles = require(`../commands/cc/${file}`);
-        CommandList.addCommand(file.toString().replace(".js", ""), true, cmdfiles.description);
-      }
-    });
-  } catch (e) {
-    console.error("No custom commands file directory exists, please create a folder in the commands directory called 'cc'".red);
-  }
-
   // Discord status URL
   var url = "https://srhpyqt94yxb.statuspage.io/api/v2/status.json/";
 
@@ -68,8 +52,7 @@ exports.run = async function(client, member, message) {
   }
   // End discord status
   const cmds = await fs.readdir(commandsFolder);
-  const ccmds = await fs.readdir(ccFolder);
-  console.log("Loading ".green + cmds.length + " commands".green + " and ".green + ccmds.length + " custom commands".green);
+  console.log("Loading ".green + cmds.length + " commands".green + " and ".green + client.ccSize + " custom commands".green);
   console.log(`ModMail` + " online!\n".green.reset + "Connected to: ".cyan + guildNames.white + " guild(s)".cyan);
   console.log("Watching for modmail...".green);
   if (ConfigService.config.debug === "on") {

@@ -26,7 +26,7 @@ module.exports = function logEvent(event, reason, color, message, client) {
     ]
   };
 
-  let guild = client.guilds.get(`${client.ConfigService.config.guildID}`);
-  let logchannel = guild.channels.find(n => n.name == `${client.ConfigService.config.channel.log}`);
+  let guild = client.guilds.get(`${ConfigService.config.guildID}`);
+  let logchannel = guild.channels.find(n => n.name == `${ConfigService.config.channel.log}`);
   logchannel.send({ embed });
 };
