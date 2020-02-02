@@ -1,5 +1,8 @@
 # ModMail
 
+![GitHub package.json version](https://img.shields.io/github/package-json/v/saamstep/modmail)
+
+
 Made by Saamstep with help from [anidiotsguide](http://anidiots.guide), SpyderHunter03, nullpointer128, and the Discord.JS Discord community!
 
 # More info @ https://samstep.net/bots/modmail
