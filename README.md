@@ -17,3 +17,4 @@ Made by Saamstep ![Twitter Follow](https://img.shields.io/twitter/follow/saamste
 - Multi-guild support? 😬
 - Config generator
 - YT Tutorial
+- Screenshots
