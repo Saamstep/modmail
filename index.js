@@ -4,6 +4,8 @@ const ConfigService = require("./config.js");
 const fs = require("fs");
 const schedule = require("node-schedule");
 const Enmap = require("enmap");
+const fetch = require("node-fetch");
+const date = require("dateformat");
 
 //modules init.
 client.isAdmin = require("./modules/isAdmin.js");
@@ -58,7 +60,7 @@ client.on("ready", () => {
       let msg = `There are ${mailCategory.children.size} unanswered tickets!`;
       if (mailCategory.children.size == 1) msg = `There is ${mailCategory.children.size} unanswered ticket!`;
       guild.channels
-        .find(ch => ch.name == `${client.ConfigService.config.channel.adminChat}`)
+        .find(ch => ch.name == `${client.ConfigService.config.channel.log}`)
         .send("@everyone", {
           embed: {
             color: 3447003,
@@ -95,14 +97,14 @@ client.on("message", message => {
 
   //make a chatlog of the modmail discussion
   function chatlog(message, channel, content) {
-    const format = `[${Date.now()}] [${message.author.username}#${message.author.discriminator}] ${content}\n`;
+    const format = `[${date(Date.now(), "dddd, mmmm dS, yyyy, h:MM:ss TT")} PST] [${message.author.username}#${message.author.discriminator}] ${content}\n`;
     if (fs.existsSync(`./logs/${channel}.txt`)) {
       fs.appendFile(`./logs/${channel}.txt`, format, err => {
         if (err) throw err;
         console.log(`new message: ${format}`);
       });
     } else {
-      fs.writeFileSync(`./logs/${channel}.txt`, format);
+      fs.writeFileSync(`./logs/${channel}.txt`, "===START MODMAIL===\n" + format);
       console.log(`new log made: ${format}`);
     }
   }
@@ -116,7 +118,7 @@ client.on("message", message => {
         .replace(`${client.ConfigService.config.prefix}`, " ")
         .trim()
     ) {
-      case "close" || "CLOSE":
+      case "close":
         let member = message.guild.members.get(message.channel.name);
         member.send({
           embed: {
@@ -125,9 +127,17 @@ client.on("message", message => {
           }
         });
         let closeReason = message.content.slice(6) || "No reason";
-        client.log("Ticket Closed", `<@${message.channel.name}>'s  support ticket was closed for reason \`\`\`${closeReason}\`\`\``, 3447003, message, client);
-        chatlog(message, message.channel.name, "[[MODMAIL CLOSED]]");
-        //make web request to hastebin server API
+        fs.appendFile(`./logs/${message.channel.name}.txt`, `\n===MODMAIL CLOSED ON ${date(Date.now(), "dddd, mmmm dS, yyyy, h:MM:ss TT")}===\nReason: ${closeReason}`, err => {
+          if (err) throw err;
+          client.log("Ticket Closed", `<@${message.channel.name}>'s  support ticket was closed for reason \`\`\`${closeReason}\`\`\``, 3447003, message, client);
+          const attachment = new Discord.Attachment(`./logs/${message.channel.name}.txt`, `${date(Date.now(), "isoDateTime")}_${member.user.username.replace(" ", "_")}.txt`);
+          message.guild.channels.find(ch => ch.name == client.ConfigService.config.channel.log).send(attachment);
+        });
+        setTimeout(function() {
+          fs.unlink(`./logs/${message.channel.name}.txt`, err => {
+            if (err) throw err;
+          });
+        }, 3000);
         message.channel.delete();
         return;
         break;
@@ -200,10 +210,11 @@ client.on("message", message => {
             description: "Created new help ticket and sent your message to the admins! To send more messages and to chat with the administrators, just text me here! Any message that the admins see will be reacted with a ✅"
           }
         });
-        await chatlog(message, channel.name, "[[TICKED STARTED]]" + " " + message.content);
+        await chatlog(message, channel.name, message.content);
         await channel.send("@everyone\n").then(msg => {
           msg.delete(1000);
-        });``
+        });
+        ``;
         await message.react("✅");
       });
       client.log("Ticket Created", `${message.author} created a new support ticket with first message as: \`\`\`${message.content}\`\`\`\n[Jump to Message](${message.url})`, 3447003, message, client);
