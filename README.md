@@ -6,7 +6,7 @@
 ![GitHub package.json dependency version (prod)](https://img.shields.io/github/package-json/dependency-version/saamstep/modmail/discord.js)
 ![Discord Support](https://img.shields.io/discord/602225388034457610?label=Discord%20Support&labelColor=FFFFF&style=plastic&logo=Discord&link=http://samstep.net/devcord&link=http://samstep.net/devcord)
 
-Made by Saamstep ![Twitter Follow](https://img.shields.io/twitter/follow/saamstep?style=social) with help from [anidiotsguide](http://anidiots.guide), SpyderHunter03, nullpointer128, and the Discord.JS Discord community!
+Made by Saamstep ![Twitter Follow](https://img.shields.io/twitter/follow/saamstep?style=social) with help from [anidiots.guide](http://anidiots.guide), SpyderHunter03 ![Twitter Follow](https://img.shields.io/twitter/follow/spyderhunter03?style=social), nullpointer ![Twitter Follow](https://img.shields.io/twitter/follow/nullpointer?style=social), and the [Discord.JS Discord community](https://discord.gg/bRCvFy9)!
 
 # More info @ https://samstep.net/bots/modmail
 
