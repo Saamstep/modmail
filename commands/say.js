@@ -6,12 +6,12 @@ exports.run = (client, message, args) => {
     message.channel.send(msgSender);
     message.channel.stopTyping(true);
   }
-  const ConfigService = require('../config.js');
+
   let isAdmin = require('../modules/isAdmin.js');
   if (isAdmin(message.author, message)) {
     if (args[0] == null) {
       return message.channel.send(
-        `${ConfigService.config.prefix}say [message]`,
+        `${client.ConfigService.config.prefix}say [message]`,
         { code: 'asciidoc' }
       );
     } else {

@@ -1,5 +1,5 @@
 module.exports = function isMod(user, message) {
-  const ConfigService = require("../config.js");
+  const ConfigService = require("../src/config.js");
   let mod = message.member.roles.find("name", `${ConfigService.config.role.mod}`);
   let admin = message.member.roles.find("name", `${ConfigService.config.role.admin}`);
   let error = require("../modules/errorMod.js");

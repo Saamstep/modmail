@@ -1,4 +1,3 @@
-const ConfigService = require('../config.js');
 var errorMod = require('../modules/errorMod.js');
 const fetch = require('node-fetch');
 

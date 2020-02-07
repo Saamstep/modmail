@@ -1,6 +1,6 @@
 const Discord = require("discord.js");
 const client = new Discord.Client({ autoReconnect: true });
-const ConfigService = require("./config.js");
+const ConfigService = require("./src/config.js");
 const fs = require("fs");
 const schedule = require("node-schedule");
 const Enmap = require("enmap");
@@ -14,7 +14,7 @@ client.isOwner = require("./modules/isOwner.js");
 client.error = require("./modules/errorMod.js");
 client.console = require("./modules/consoleMod.js");
 client.log = require("./modules/logMod.js");
-client.ConfigService = require("./config.js");
+client.ConfigService = require("./src/config.js");
 
 client.login(client.ConfigService.config.token);
 

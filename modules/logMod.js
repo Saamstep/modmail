@@ -1,5 +1,5 @@
 module.exports = function logEvent(event, reason, color, message, client) {
-  const ConfigService = require("../config.js");
+  const ConfigService = require("../src/config.js");
 
   let now = new Date();
 

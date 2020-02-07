@@ -1,5 +1,5 @@
 module.exports = function consoleEvent(event) {
-  const ConfigService = require('../config.js');
+  const ConfigService = require('../src/config.js');
 
   var dateFormat = require('dateformat');
   let now = new Date();

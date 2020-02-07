@@ -1,4 +1,4 @@
-const ConfigService = require('./config.js');
+const ConfigService = require("./config.js");
 var commandList = (function() {
   this.commands = {};
 
@@ -10,13 +10,9 @@ var commandList = (function() {
   };
 
   this.helpString = () => {
-    var msg = '';
+    var msg = "";
     for (command in this.commands) {
-      msg += `${ConfigService.config.prefix}${command} - ${
-        this.commands[command].isCustom
-          ? '[Custom Command]'
-          : this.commands[command].description
-      }\n`;
+      msg += `${ConfigService.config.prefix}${command} - ${this.commands[command].isCustom ? "[Custom Command]" : this.commands[command].description}\n`;
     }
     return `\`\`\`${msg}\`\`\``;
   };

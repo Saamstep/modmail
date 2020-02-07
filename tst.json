@@ -1,0 +1,16 @@
+{
+  "prefix": "",
+  "token": "", 
+  "status": ["Status1", "Status2", "Status3"],
+  "ownerid": "",  
+  "defaultGame": "for DMs",
+  "debug": false,
+  "guildID": "",  
+  "role": {
+    "admin": ""
+  },
+  "channel": {
+    "log": "",
+    "categoryName": ""
+  }
+}

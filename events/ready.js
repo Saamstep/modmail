@@ -1,8 +1,8 @@
-const ConfigService = require("../config.js");
+const ConfigService = require("../src/config.js");
 const colors = require("colors");
 const fetch = require("node-fetch");
 const commandsFolder = "./commands/";
-const CommandList = require("../commandList.js");
+const CommandList = require("../src/commandList.js");
 const fs = require("fs").promises;
 
 exports.run = async function(client, member, message) {
