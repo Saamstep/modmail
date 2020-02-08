@@ -1,11 +1,15 @@
 {
   "prefix": "",
-  "token": "", 
-  "status": ["Status1", "Status2", "Status3"],
-  "ownerid": "",  
+  "token": "0912841039842",
+  "status": [
+    "Status1",
+    "Status2",
+    "Status3"
+  ],
+  "ownerid": "adifjadiov",
   "defaultGame": "for DMs",
   "debug": false,
-  "guildID": "",  
+  "guildID": "",
   "role": {
     "admin": ""
   },
