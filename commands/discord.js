@@ -1,5 +1,6 @@
 var errorMod = require('../modules/errorMod.js');
 const fetch = require('node-fetch');
+const cooldown = require('../index.js');
 
 exports.run = async (client, message, args) => {
   async function cmd() {
