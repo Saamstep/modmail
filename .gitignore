@@ -1,5 +1,5 @@
-node_modules
 config.json
-.eslintrc.json 
-env.json
-data
+node_modules
+.vscode
+meta/tags.json
+.DS_Store

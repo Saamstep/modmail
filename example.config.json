@@ -1,16 +1,50 @@
 {
-  "prefix": "",
-  "token": "", 
-  "status": ["Status1", "Status2", "Status3"],
-  "ownerid": "",  
-  "defaultGame": "for DMs",
+  "token": "",
+  "version": 1,
+  "prefix": "?",
   "debug": false,
-  "guildID": "",  
+  "ownerid": "",
+  "status": [
+    {
+      "type": "PLAYING",
+      "msg": "games"
+    },
+    {
+      "type": "WATCHING",
+      "msg": "YouTube"
+    }
+  ],
+  "apiKeys": {
+    "api": "Your-KEY"
+  },
+  "modmail": {
+    "guild": "id",
+    "enabled": false,
+    "category": "ModMail",
+    "rolesAllowed": [],
+    "color": 5612998,
+    "blockedUsers": [""]
+  },
+  "messages": {
+    "ticketDesc": "This is a private chat with the server administrators/moderators and the user. Bot commands will not be sent, only built in ModMail commands will work. Run the [p]cmds command for more information.",
+    "newTicket": "Hello! I have opened up a new ticket for you. One of our staff members will respond back to you shortly. If you need to add anything else to your ticket or send an image you can send it here!",
+    "newTicketManual": "Hello! A staff member has created a ticket for you. Please respond back at a convenient time.",
+    "closedTicket": "Your ticket has been closed.",
+    "blockedUserError": "You are blocked from using modmail.",
+    "disabled": "ModMail is currently disabled."
+  },
+  "snippets": [],
   "role": {
+    "mod": "",
     "admin": ""
   },
+  "loops": {
+    "status": false
+  },
+  "services": {
+    "uptime": false
+  },
   "channel": {
-    "log": "",
-    "categoryName": ""
+    "log": "logger"
   }
 }

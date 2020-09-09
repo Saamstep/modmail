@@ -1,25 +1,36 @@
 {
-  "name": "modmail",
-  "version": "2.3.0",
-  "description": "Made by Saamstep with help from [anidiotsguide](http://anidiots.guide), SpyderHunter03, nullpointer128, and the Discord.JS Discord community!",
+  "name": "sambot-modmail",
+  "version": "2.0.0",
+  "description": "A simple user ticket management system",
   "main": "index.js",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/Saamstep/modmail.git"
+  },
+  "keywords": [
+    "discordjs",
+    "djsbot",
+    "discord",
+    "bot",
+    "modmail",
+    "tickets"
+  ],
+  "author": "Samstep",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/Saamstep/modmail/issues"
+  },
+  "homepage": "https://github.com/Saamstep/modmail#readme",
   "dependencies": {
-    "better-sqlite3": "^5.4.3",
-    "colors": "^1.4.0",
-    "dateformat": "^3.0.3",
-    "discord.js": "^11.5.1",
-    "enmap": "^5.2.4",
+    "chalk": "^4.0.0",
+    "cors": "^2.8.5",
+    "discord.js": "^12.2.0",
+    "discord.js-commando": "github:discordjs/Commando",
+    "express": "^4.17.1",
+    "fs": "0.0.1-security",
+    "helmet": "^4.1.0",
     "node-fetch": "^2.6.0",
-    "node-schedule": "^1.3.2",
-    "os": "^0.1.1",
-    "readline": "^1.3.0"
-  },
-  "devDependencies": {},
-  "scripts": {
-    "start": "node index.js",
-    "debug": "node scripts/debug.js",
-    "conf": "node scripts/conf.js"
-  },
-  "author": "",
-  "license": "ISC"
+    "path": "^0.12.7",
+    "pm2": "^4.4.0"
+  }
 }
