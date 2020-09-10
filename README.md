@@ -164,3 +164,7 @@ PM2 is a node module that can be easily installed and setup to keep your bot onl
 2. Run `pm2 start index.js --name "ModMail` The name `ModMail` can be whatever you want. It is just easy to remember.
 3. Access the logs of your bot with `pm2 logs ModMail`
 4. Read more pm2 commands here.
+
+
+## 4.4 Repl.it Hosting
+Using the deploy button at the top of this repository is an option for hosting. However, make sure to [store your secrets safely](https://docs.repl.it/repls/secret-keys). It is **required** to at least store your Discord Bot token this way to keep it safe from attackers. 
