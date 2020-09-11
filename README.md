@@ -77,7 +77,8 @@ Made by [Samstep](https://twitter.com/saamstep) with guidance from [anidiots.gui
 
 # 3. Requirements
 * File system access
-* NodeJS v12.18.1 minimum
+* [NodeJS](https://node.js.org) v12.18.1 minimum
+* [Git](https://git-scm.com/book/en/v2/Getting-Started-Installing-Git)
 
 > This guide will not cover installing NodeJS.
 
