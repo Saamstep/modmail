@@ -31,7 +31,8 @@
     "newTicketManual": "Hello! A staff member has created a ticket for you. Please respond back at a convenient time.",
     "closedTicket": "Your ticket has been closed.",
     "blockedUserError": "You are blocked from using modmail.",
-    "disabled": "ModMail is currently disabled."
+    "disabled": "ModMail is currently disabled.",
+    "about": "Hello I am ModMail! I am a Discord service provided for you so you can contact the server staff if needed. If you have any questions please ask! Note that improper use of this system may result in punishment."
   },
   "snippets": [],
   "role": {

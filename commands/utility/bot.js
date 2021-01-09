@@ -1,13 +1,15 @@
 const { Command } = require("discord.js-commando");
 const fetch = require("node-fetch");
 
-module.exports = class botCommand extends Command {
+module.exports = class botCommand extends (
+  Command
+) {
   constructor(client) {
     super(client, {
       name: "bot",
       group: "utility",
       memberName: "bot",
-      description: "Bot info",
+      description: "General & technical bot information",
       throttling: {
         usages: 2,
         duration: 5,
@@ -24,8 +26,7 @@ module.exports = class botCommand extends Command {
           icon_url: "https://samstep.net/images/logo.png",
           url: "https://github.com/Saamstep",
         },
-        description:
-          "Bot by [Samstep](https://github.com/Saamstep). Made with [Discord.js Commando](https://github.com/discordjs/Commando#readme)\n\n**Thanks You:**\n[AnIdiots.guide](https://anidiots.guide)\n[Discordjs.guide](https://anidiots.guide)\n[Discordjs Support Server](https://discord.gg/bRCvFy9)\n[John Panos](https://github.com/johnpanos/)",
+        description: "Bot by [Samstep](https://github.com/Saamstep). Made with [Discord.js Commando](https://github.com/discordjs/Commando#readme)\n\n**Thanks You:**\n[AnIdiots.guide](https://anidiots.guide)\n[Discordjs.guide](https://anidiots.guide)\n[Discordjs Support Server](https://discord.gg/bRCvFy9)\n[John Panos](https://github.com/johnpanos/)",
         fields: [
           {
             name: "Prefix",
@@ -44,11 +45,7 @@ module.exports = class botCommand extends Command {
           },
           {
             name: "Docs",
-            value: "https://github.com/Saamstep/modmail/blob/master/README.md",
-          },
-          {
-            name: "Dependencies",
-            value: `${Object.entries(require("../../package.json").dependencies).join("\n")}`,
+            value: "https://samstep.net/bots/modmail",
           },
         ],
       },

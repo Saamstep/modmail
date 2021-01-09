@@ -1,12 +1,12 @@
 "use strict";
 //define important bot things
-const { CommandoClient } = require("discord.js-commando");
+const Commando = require("discord.js-commando");
 const path = require("path");
 const fs = require("fs");
 const chalk = require("chalk");
 
 //create the bot boi
-const client = new CommandoClient({
+const client = new Commando.CommandoClient({
   commandPrefix: `${require("./config.json").prefix}`,
   owner: `${require("./config.json").ownerid}`,
 });
@@ -92,9 +92,7 @@ client.dispatcher.addInhibitor((msg) => {
 client.dispatcher.addInhibitor((msg) => {
   if (!msg.channel.parent) return;
   if (msg.channel.parent.name == client.config.modmail.category) {
-    msg.channel
-      .send({ embed: { description: "Modmail Bot commands do not work very well in ModMail ticket channels! Please use another channel for smoother operation! (Users do not see bot output)", color: 13632027 } })
-      .then((m) => m.delete({ timeout: 10000 }));
+    msg.channel.send({ embed: { description: "Modmail Bot commands do not work very well in ModMail ticket channels! Please use another channel for smoother operation! (Users do not see bot output)", color: 13632027 } }).then((m) => m.delete({ timeout: 10000 }));
   }
 });
 /*
@@ -197,7 +195,7 @@ client.once("ready", () => {
   */
   if (client.config.version != CONFIG_VERSION) {
     throw new Error(chalk.red.bold(`Incompatible config file version ${client.config.version} for this bot version ${require("./package.json").version}. Must use config version ${CONFIG_VERSION}`));
-  } 
+  }
 
   // Role and Channel Checker
   client.guilds.cache.map((guild) => {
@@ -290,14 +288,14 @@ function hasCategory(g) {
 //makes a ticket channel, sends the confirmation that a ticket was created and starts the logger
 function makeTicket(g, message, embed) {
   let category = g.channels.cache.find((ch) => ch.id == client.config.modmail.category || ch.name == client.config.modmail.category);
-  g.channels.create(message.author.tag.replace("#", "-"), { reason: "New ModMail ticket", topic: `${client.config.messages.ticketDesc.replace("[p]", client.config.prefix)}`, parent: category }).then((ch) => ch.send({ embed }));
+  g.channels.create(message.author.tag.replace("#", "-"), { reason: "New ModMail ticket", topic: `[${message.author.id}] ${client.config.messages.ticketDesc.replace("[p]", client.config.prefix)}`, parent: category }).then((ch) => ch.send({ embed }));
   logMail(message.author, message);
   message.author
     .send({ embed: { description: client.config.messages.newTicket } })
     .then(() => message.react("✅"))
     .catch((error) => message.react("❌"));
   // client.log("New Ticket", `Initial content: \`\`\`${message.content}\`\`\``, 440298, message);
-  guild.channels.cache
+  g.channels.cache
     .find((ch) => ch.name == client.config.channel.log || ch.id == client.config.channel.log)
     .send({
       embed: {
@@ -417,6 +415,10 @@ client.on("message", async (message) => {
       return message.author.send({ embed: { description: client.config.messages.disabled, color: client.config.modmail.color } });
     }
 
+    if (message.content.startsWith(client.config.prefix)) {
+      return;
+    }
+
     if (hasCategory(guild)) {
       //check for modmail category
       //if modmail category, check for open ticket
@@ -448,7 +450,7 @@ client.on("message", async (message) => {
         })
         .then((cat) => {
           guild.channels
-            .create(message.author.tag.replace("#", "-"), { reason: "New ModMail ticket", topic: `${client.config.messages.ticketDesc.replace("[p]", client.config.prefix)}`, parent: cat })
+            .create(message.author.tag.replace("#", "-"), { reason: "New ModMail ticket", topic: `[${message.author.id}] ${client.config.messages.ticketDesc.replace("[p]", client.config.prefix)}`, parent: cat })
             .then((ch) => {
               ch.send({ embed }).then(() => message.react("✅"));
               logMail(message.author, message);
@@ -509,7 +511,8 @@ client.on("message", async (message) => {
 
   //TICKET COMMANDS CONTROLLER
   if (message.channel.parentID == guild.channels.cache.find((ch) => ch.name == client.config.modmail.category || ch.id == client.config.modmail.category) && !message.author.bot && message.content.startsWith(client.config.prefix)) {
-    let user = guild.members.cache.find((m) => m.user.tag.replace("#", "-").toLowerCase() == message.channel.name);
+    // let user = guild.members.cache.find((m) => m.user.tag.replace("#", "-").toLowerCase() == message.channel.name);
+    let user = guild.members.cache.find((m) => m.id == message.channel.topic.substring(1, message.channel.topic.indexOf("]")));
 
     switch (message.content.split(" ")[0].slice(1).toLowerCase()) {
       case "close":
@@ -572,8 +575,9 @@ client.on("message", async (message) => {
   }
 
   //GUILD TO DM controller
-  if (!message.author.bot && message.channel.parentID == guild.channels.cache.find((ch) => ch.name == client.config.modmail.category || ch.id == client.config.modmail.category)) {
-    let user = guild.members.cache.find((m) => m.user.tag.replace("#", "-").toLowerCase() == message.channel.name);
+  if (!message.author.bot && message.channel.parentID == guild.channels.cache.find((ch) => ch.name == client.config.modmail.category || ch.id == client.config.modmail.category) && message.channel.type != "dm") {
+    // let user = guild.members.cache.find((m) => m.user.tag.replace("#", "-").toLowerCase() == message.channel.name);
+    let user = guild.members.cache.find((m) => m.id == message.channel.topic.substring(1, message.channel.topic.indexOf("]")));
     if (!user) return;
     user
       .send({ embed })
@@ -586,8 +590,12 @@ client.on("message", async (message) => {
 //ticket closing functions
 client.on("channelDelete", async (channel) => {
   const guild = client.guilds.cache.get(client.config.modmail.guild);
-  let user = guild.members.cache.find((m) => m.user.tag.replace("#", "-").toLowerCase() == channel.name);
+
+  // let user = guild.members.cache.find((m) => m.user.tag.replace("#", "-").toLowerCase() == channel.name);
+  if (channel.type != "text" || !channel.topic || channel.topic[0] != "[") return;
+  let user = guild.members.cache.find((m) => m.id == channel.topic.substring(1, channel.topic.indexOf("]")));
   if (!user) return;
+
   await guild.channels.cache
     .find((ch) => ch.name == client.config.channel.log || ch.id == client.config.channel.log)
     .send({
