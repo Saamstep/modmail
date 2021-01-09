@@ -24,9 +24,9 @@ Made by [Samstep](https://twitter.com/saamstep) with guidance from [anidiots.gui
 
 # 2. Commands
 * Utility
+  * about: What is ModMail?
   * bot: Bot info
   * discord: Check Discord server status
-  * user: Get general user info
   * help: Displays a list of available commands, or detailed information for a specified command.
   * ping: Checks the bot's ping to the Discord server.
   * eval: Executes JavaScript code.
@@ -153,7 +153,9 @@ This status would display: **Playing games**
 - blockedUserError
   - Message to send to a user when they interact with modmail when they are blocked.
 - disabled
-  - Message to send to a user when they interact with modmail when ModMail is disabled 
+  - Message to send to a user when they interact with modmail when ModMail is disabled.
+- about
+  - Message displayed when "about" command is run.
 
 ### `uptime` webserver
 This webserver is used by me to easily check if my bot is online. You can use it if you want, or you can disable it as shown in the Config File section. The uptime webserver requires password in the header. The header must be `key` and the value can be anything you want. You can set this value in the Config File under `apiKeys.api`.
