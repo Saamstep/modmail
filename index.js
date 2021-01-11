@@ -19,7 +19,7 @@ try {
 //hey look its a config file poggers
 client.config = require("./config.json");
 //this must match what is in the config.json
-const CONFIG_VERSION = 1;
+const CONFIG_VERSION = 2;
 /*
 ==========================================================================================
    _____ ____  __  __ __  __          _   _ _____   _____ 
