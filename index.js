@@ -1,14 +1,19 @@
 "use strict";
 //define important bot things
+const { Intents } = require("discord.js");
 const Commando = require("discord.js-commando");
 const path = require("path");
 const fs = require("fs");
 const chalk = require("chalk");
 
+const intents = new Intents([Intents.NON_PRIVILEGED, "GUILD_MEMBERS"]);
+
 //create the bot boi
 const client = new Commando.CommandoClient({
   commandPrefix: `${require("./config.json").prefix}`,
   owner: `${require("./config.json").ownerid}`,
+  partials: ["MESSAGE", "CHANNEL", "REACTION"],
+  ws: { intents },
 });
 
 try {
@@ -19,7 +24,7 @@ try {
 //hey look its a config file poggers
 client.config = require("./config.json");
 //this must match what is in the config.json
-const CONFIG_VERSION = 2;
+const CONFIG_VERSION = 1;
 /*
 ==========================================================================================
    _____ ____  __  __ __  __          _   _ _____   _____ 
@@ -511,7 +516,7 @@ client.on("message", async (message) => {
 
   //TICKET COMMANDS CONTROLLER
   if (message.channel.parentID == guild.channels.cache.find((ch) => ch.name == client.config.modmail.category || ch.id == client.config.modmail.category) && !message.author.bot && message.content.startsWith(client.config.prefix)) {
-    // let user = guild.members.cache.find((m) => m.user.tag.replace("#", "-").toLowerCase() == message.channel.name);
+    guild.members.fetch();
     let user = guild.members.cache.find((m) => m.id == message.channel.topic.substring(1, message.channel.topic.indexOf("]")));
 
     switch (message.content.split(" ")[0].slice(1).toLowerCase()) {
@@ -593,6 +598,7 @@ client.on("channelDelete", async (channel) => {
 
   // let user = guild.members.cache.find((m) => m.user.tag.replace("#", "-").toLowerCase() == channel.name);
   if (channel.type != "text" || !channel.topic || channel.topic[0] != "[") return;
+  guild.members.fetch();
   let user = guild.members.cache.find((m) => m.id == channel.topic.substring(1, channel.topic.indexOf("]")));
   if (!user) return;
 
