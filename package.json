@@ -1,6 +1,6 @@
 {
   "name": "sambot-modmail",
-  "version": "2.1.1",
+  "version": "2.1.2",
   "description": "A simple user ticket management system",
   "main": "index.js",
   "repository": {
@@ -31,6 +31,7 @@
     "helmet": "^4.4.1",
     "node-fetch": "^2.6.1",
     "path": "^0.12.7",
-    "pm2": "^4.5.6"
+    "pm2": "^4.5.6",
+    "yeoman-environment": "^3.2.0"
   }
 }

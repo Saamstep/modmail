@@ -19,7 +19,7 @@
   },
   "modmail": {
     "guild": "id",
-    "enabled": false,
+    "enabled": true,
     "category": "ModMail",
     "rolesAllowed": [],
     "color": 5612998,

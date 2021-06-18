@@ -20,7 +20,7 @@ Made by [Samstep](https://twitter.com/saamstep) with guidance from [anidiots.gui
 * Disable/enable modmail on command
 * "Quick reply" snippets
 
-> Screenshots coming soon!
+> Screenshots & video coming soon!
 
 # 2. Commands
 * Utility
@@ -160,6 +160,9 @@ This status would display: **Playing games**
 ### `uptime` webserver
 This webserver is used by me to easily check if my bot is online. You can use it if you want, or you can disable it as shown in the Config File section. The uptime webserver requires password in the header. The header must be `key` and the value can be anything you want. You can set this value in the Config File under `apiKeys.api`.
 
+### What is a key value pair?
+A key value pair is where data is stored and referenced using a key and the value is given based on that key. Still confused? Checkout this tutorial https://javascript.info/object. If the bot asks you for a key when updating a config property (for example when using [p]setchannel). You pass the key `log` to modify the value (channel name/id) that corresponds to the log channel. 
+
 ## 4.3. PM2
 PM2 is a node module that can be easily installed and setup to keep your bot online 24/7 and auto start it if your host machine disconnects. Read the steps below to integrate pm2.
 
@@ -168,6 +171,5 @@ PM2 is a node module that can be easily installed and setup to keep your bot onl
 3. Access the logs of your bot with `pm2 logs ModMail`
 4. Read more pm2 commands here.
 
-
 ## 4.4 Repl.it Hosting
-Using the deploy button at the top of this repository is an option for hosting. However, make sure to [store your secrets safely](https://docs.repl.it/repls/secret-keys). It is **required** to at least store your Discord Bot token this way to keep it safe from attackers. 
+Using the deploy button at the top of this repository is an option for hosting. However, make sure to [store your secrets safely](https://docs.replit.com/repls/secrets-environment-variables). It is **required** to at least store your Discord Bot token this way to keep it safe from attackers. 

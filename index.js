@@ -266,11 +266,18 @@ function logMail(user, message) {
   fs.appendFileSync(`./logs/${user.id}.txt`, LOG_TEMPLATE);
 }
 
+//parse users tag and convert it to a channelName
+function getChannelName(user) {
+  let value = user.replace("#", "-").toLowerCase();
+  value = value.replace(/ /g, "-");
+  return value;
+}
+
 function msg(destination, g, message, embed) {
   switch (destination) {
     case "guild":
       g.channels.cache
-        .find((ch) => ch.name == `${message.author.tag.replace("#", "-").toLowerCase()}`)
+        .find((ch) => ch.name == `${getChannelName(message.author.tag)}`)
         .send({ embed })
         .then(() => message.react("✅"))
         .catch((error) => message.react("❌"));
@@ -293,7 +300,7 @@ function hasCategory(g) {
 //makes a ticket channel, sends the confirmation that a ticket was created and starts the logger
 function makeTicket(g, message, embed) {
   let category = g.channels.cache.find((ch) => ch.id == client.config.modmail.category || ch.name == client.config.modmail.category);
-  g.channels.create(message.author.tag.replace("#", "-"), { reason: "New ModMail ticket", topic: `[${message.author.id}] ${client.config.messages.ticketDesc.replace("[p]", client.config.prefix)}`, parent: category }).then((ch) => ch.send({ embed }));
+  g.channels.create(getChannelName(message.author.tag), { reason: "New ModMail ticket", topic: `[${message.author.id}] ${client.config.messages.ticketDesc.replace("[p]", client.config.prefix)}`, parent: category }).then((ch) => ch.send({ embed }));
   logMail(message.author, message);
   message.author
     .send({ embed: { description: client.config.messages.newTicket } })
@@ -327,7 +334,8 @@ function makeTicket(g, message, embed) {
 
 //checks if a ticket is already open
 function hasTicket(g, message) {
-  let ticket = g.channels.cache.find((ch) => ch.name == message.author.tag.replace("#", "-").toLowerCase());
+  let channelName = getChannelName(message.author.tag);
+  let ticket = g.channels.cache.find((ch) => ch.name == channelName);
   if (ticket) {
     return true;
   } else {
@@ -455,7 +463,7 @@ client.on("message", async (message) => {
         })
         .then((cat) => {
           guild.channels
-            .create(message.author.tag.replace("#", "-"), { reason: "New ModMail ticket", topic: `[${message.author.id}] ${client.config.messages.ticketDesc.replace("[p]", client.config.prefix)}`, parent: cat })
+            .create(getChannelName(message.author.tag), { reason: "New ModMail ticket", topic: `[${message.author.id}] ${client.config.messages.ticketDesc.replace("[p]", client.config.prefix)}`, parent: cat })
             .then((ch) => {
               ch.send({ embed }).then(() => message.react("✅"));
               logMail(message.author, message);
