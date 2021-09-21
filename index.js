@@ -625,9 +625,6 @@ client.on("channelDelete", async (channel) => {
   });
   //if channel is modmail ticket
   if (!channel.parent) return;
-  if (channel.parent.name == client.config.modmail.category || channel.parent.id == client.config.modmail.category) {
-    user.send({ embed: { description: client.config.messages.closedTicket } });
-  }
   try {
   } catch (e) {
     console.error(e);
