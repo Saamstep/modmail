@@ -1,37 +1,21 @@
 {
-  "name": "sambot-modmail",
-  "version": "2.1.2",
-  "description": "A simple user ticket management system",
-  "main": "index.js",
-  "repository": {
-    "type": "git",
-    "url": "git+https://github.com/Saamstep/modmail.git"
-  },
-  "keywords": [
-    "discordjs",
-    "djsbot",
-    "discord",
-    "bot",
-    "modmail",
-    "tickets"
-  ],
-  "author": "Samstep",
-  "license": "MIT",
-  "bugs": {
-    "url": "https://github.com/Saamstep/modmail/issues"
-  },
-  "homepage": "https://github.com/Saamstep/modmail#readme",
   "dependencies": {
-    "chalk": "^4.0.0",
-    "cors": "^2.8.5",
-    "discord.js": "^12.5.2",
-    "discord.js-commando": "github:discordjs/Commando",
-    "express": "^4.17.1",
-    "fs": "0.0.1-security",
-    "helmet": "^4.4.1",
-    "node-fetch": "^2.6.1",
+    "consola": "^2.15.3",
+    "discord.js": "^13.6.0",
+    "dotenv": "^16.0.0",
+    "easy-json-database": "^1.5.0",
+    "fs": "^0.0.1-security",
     "path": "^0.12.7",
-    "pm2": "^4.5.6",
-    "yeoman-environment": "^3.2.0"
-  }
+    "sequelize": "^6.16.1",
+    "sqlite3": "^4.2.0"
+  },
+  "name": "modmail-v2",
+  "version": "1.0.0",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "author": "",
+  "license": "ISC",
+  "description": ""
 }

@@ -1,5 +1,5 @@
-config.json
+settings.json
+.env
 node_modules
 .vscode
-meta/tags.json
 .DS_Store
