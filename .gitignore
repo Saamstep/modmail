@@ -3,3 +3,5 @@ settings.json
 node_modules
 .vscode
 .DS_Store
+database.sqlite
+logs

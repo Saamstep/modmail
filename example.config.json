@@ -1,0 +1,24 @@
+{
+  "prefix": "$",
+  "lock": false,
+  "primaryGuild": {
+    "id": "",
+    "logChannel": "",
+    "categoryID": ""
+  },
+  "staffGuild": {
+    "id": "",
+    "logChannel": "",
+    "hudChannel": ""
+  },
+  "logToStaff": false,
+  "readAccess": [""],
+  "writeAccess": [""],
+  "blockedUsers": [""],
+  "messages": {
+    "ticketCreated": "We have created a new ticket for you! We will get back to regarding your inquiry as soon as possible.",
+    "ticketClosed": "Your ticket has been closed! Thank you for reaching out to us and have a good day.",
+    "blocked": "You have been blocked from direct messaging ModMail.",
+    "locked": "ModMail is currently locked from accepting direct messages."
+  }
+}

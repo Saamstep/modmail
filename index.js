@@ -1,9 +1,4 @@
-/* 
-TODO
-* Set Category Command
-*/
-
-const { Client, Intents, Permissions } = require("discord.js");
+const { Client, Intents, Permissions, Collection } = require("discord.js");
 const Sequelize = require("sequelize");
 const db = require("easy-json-database");
 const fs = require("fs");
@@ -15,6 +10,14 @@ const theIntents = new Intents([Intents.FLAGS.DIRECT_MESSAGES, Intents.FLAGS.GUI
 const client = new Client({ intents: theIntents, partials: ["CHANNEL"] });
 
 client.settings = new db("./settings.json");
+
+client.commands = new Collection();
+const cmds = fs.readdirSync("./commands/").filter((f) => f.endsWith(".js"));
+
+for (const file of cmds) {
+  const command = require(`./commands/${file}`);
+  client.commands.set(command.name, command);
+}
 
 const sequelize = new Sequelize("database", process.env.DB_USER, process.env.DB_PASSWORD, {
   host: "localhost",
@@ -98,12 +101,16 @@ async function createTicket(user) {
   let guild = client.guilds.cache.get(client.settings.get("primaryGuild").id);
   let sGuild = client.guilds.cache.get(client.settings.get("staffGuild").id);
   let hudChannel = sGuild.channels.cache.get(client.settings.get("staffGuild").hudChannel);
-
+  fs.writeFile(`./logs/${user.id}.log`, `===${user.tag}'s Ticket===\n`, (err) => {
+    if (err) consola.error(err);
+    return;
+  });
   let ticketChannel = await guild.channels.create(`${user.tag.replace(/ /g, "-")}`, { reason: "Modmail ticket created" });
   ticketChannel.setParent(client.settings.get("primaryGuild").categoryID, { lockPermissions: true });
   let msg = await hudChannel.send({ embeds: hudTemplate(user, "OPEN", "N/A", false, ticketChannel) });
   const ticket = await Tickets.create({ member: user.id, tag: ticketChannel.id, status: "OPEN", assignee: "N/A", hudID: msg.id, staffReplied: false });
   ticketChannel.setTopic(`**\|\|** Ticket Creator: ${user} (\`${user.id}\`) **\|\|** Created At: ${Date.now().toString()} **\|\|**`);
+  require("./preview.js").preview(user, ticketChannel);
   user.send({ embeds: [{ author: { name: guild.name, icon_url: guild.iconURL() }, description: client.settings.get("messages").ticketCreated }] });
   return { ticketChannel, ticket };
 }
@@ -146,13 +153,46 @@ client.on("ready", async () => {
 });
 
 client.on("messageCreate", async (message) => {
-  if (message.partial) message.fetch();
   if (message.author.bot) return;
+  if (message.partial) message.fetch();
 
-  //old regex: message.channel.topic.match(/[[0-9]{17,}].+/g)
+  if (message.mentions.has(client.user) && message.channel.type != "DM") message.reply("Hello, I'm ModMail! DM me for assistance.");
 
-  //Server -> DM
+  const args = message.content.slice(client.settings.get("prefix").length).trim().split(/ +/);
+  const command = args.shift().toLowerCase();
+
+  function helpText(cmd, args) {
+    if (args.length == 0) return;
+    let b = "";
+    for (a in args) {
+      b += `[${args[a]}] `;
+    }
+    message.channel.send(`\`\`\`\nInvalid command usage.\n\n${client.settings.get("prefix")}${cmd} ${b.trim()}\`\`\``);
+  }
+
+  if (client.commands.has(command) && message.channel.type !== "DM") {
+    try {
+      let c = client.commands.get(command);
+      switch (c.perm) {
+        case 0:
+          let cmd = await c.execute(client, message, args);
+          if (cmd == false) helpText(c.name, c.args);
+          break;
+        case 1:
+          if (message.member.roles.cache.some((role) => client.settings.get("writeAccess").includes(role.id))) {
+            let cmd = await c.execute(client, message, args, Tickets);
+            if (cmd == false) helpText(c.name, c.args);
+          }
+          break;
+        default:
+          break;
+      }
+    } catch (e) {
+      consola.error(e);
+    }
+  }
   if (message.channel.type === "GUILD_TEXT" && message.channel.parentId == client.settings.get("primaryGuild").categoryID) {
+    //Server -> DM
     if (message.content.startsWith("#")) {
       message.channel.send({ embeds: noteTemplate(message) });
       message.delete();
@@ -161,9 +201,9 @@ client.on("messageCreate", async (message) => {
 
     //Detect and run Modmail commands
     if (message.content.startsWith(client.settings.get("prefix"))) {
-      const args = message.content.slice(client.settings.get("prefix").length).trim().split(/ +/g);
-      const command = args.shift().toLowerCase();
-      client.emit("mmCommand", command, args, message);
+      const mArgs = message.content.slice(client.settings.get("prefix").length).trim().split(/ +/g);
+      const mCommand = mArgs.shift().toLowerCase();
+      client.emit("mmCommand", mCommand, mArgs, message);
       return;
     }
 
@@ -198,7 +238,7 @@ client.on("messageCreate", async (message) => {
   }
 
   //Send DMS -> Server
-  if (message.channel.type === "DM") {
+  if (message.channel.type === "DM" && !message.content.startsWith(client.settings.get("prefix"))) {
     //Check if the user is allowed to use ModMail
     if (client.settings.get("blockedUsers").includes(message.author.id)) {
       return message.author.send({ embeds: [{ author: { name: message.guild.name, icon_url: message.guild.iconURL() }, description: client.settings.get("messages").blocked }] });
@@ -242,6 +282,8 @@ client.on("messageCreate", async (message) => {
       await Tickets.update({ staffReplied: false }, { where: { member: message.author.id } });
       updateHudMessage(existingTicket, message.author, existingTicket.get("status"), existingTicket.get("assignee"), false, channel);
     }
+  } else if (message.content.startsWith(client.settings.get("prefix")) && message.channel.type === "DM" && client.commands.has(command)) {
+    message.reply("*Commands do not work in DMs!* Please use the server to run commands. To start a new ticket or reply to an already existing ticket simply send a message in this channel!");
   }
 });
 
@@ -335,9 +377,13 @@ client.on("channelDelete", async (channel) => {
 
     await guild.channels.cache.get(client.settings.get("logToStaff") ? client.settings.get("staffGuild").logChannel : client.settings.get("primaryGuild").logChannel).send({ embeds: [{ title: "Ticket Closed", description: `**${channel.name}** ticket closed.` }], files: [{ attachment: `./logs/${receiver.id}.log`, name: `${channel.name}-${Date.now()}.log`, description: "Modmail Ticket Log" }] });
     await Tickets.destroy({ where: { member: receiver.id } });
-    fs.unlinkSync(`./logs/${receiver.id}.log`, (err) => {
-      if (err) consola.error(`Unable to delete log file for ${channel.name}`);
-    });
+    try {
+      fs.unlinkSync(`./logs/${receiver.id}.log`, (err) => {
+        if (err) return consola.error(`Unable to delete log file for ${channel.name}`);
+      });
+    } catch (e) {
+      consola.error(`Unable to delete log file for ${channel.name}`);
+    }
   }
 });
 
