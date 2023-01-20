@@ -111,7 +111,7 @@ async function createTicket(user) {
   const ticket = await Tickets.create({ member: user.id, tag: ticketChannel.id, status: "OPEN", assignee: "N/A", hudID: msg.id, staffReplied: false });
   ticketChannel.setTopic(`**\|\|** Ticket Creator: ${user} (\`${user.id}\`) **\|\|** Created At: ${Date.now().toString()} **\|\|**`);
   require("./preview.js").preview(user, ticketChannel);
-  user.send({ embeds: [{ author: { name: guild.name, icon_url: guild.iconURL() }, description: client.settings.get("messages").ticketCreated }] });
+  await user.send({ embeds: [{ author: { name: guild.name, icon_url: guild.iconURL() }, description: client.settings.get("messages").ticketCreated }] });
   return { ticketChannel, ticket };
 }
 
@@ -156,7 +156,7 @@ client.on("messageCreate", async (message) => {
   if (message.author.bot) return;
   if (message.partial) message.fetch();
 
-  if (message.mentions.has(client.user) && message.channel.type != "DM") message.reply("Hello, I'm ModMail! DM me for assistance.");
+  // if (message.mentions.has(client.user) && message.channel.type != "DM") message.reply("Hello, I'm ModMail! DM me for assistance.");
 
   const args = message.content.slice(client.settings.get("prefix").length).trim().split(/ +/);
   const command = args.shift().toLowerCase();
