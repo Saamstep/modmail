@@ -6,7 +6,7 @@
     "easy-json-database": "^1.5.0",
     "fs": "^0.0.1-security",
     "path": "^0.12.7",
-    "sequelize": "^6.16.1",
+    "sequelize": "^6.28.2",
     "sqlite3": "^4.2.0"
   },
   "name": "modmail-v2",
