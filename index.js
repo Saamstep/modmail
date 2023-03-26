@@ -53,6 +53,7 @@ const hudTemplate = (user, status, assignee, staffReplied, ticketChannel) => [
   },
 ];
 const noteTemplate = (message) => [{ title: "New Note", author: { name: message.member.nickname || message.author.username, icon_url: message.author.avatarURL() }, color: "RED", description: message.content.substring(1) }];
+const topicTemplate = (user, assignee, daysOld) => `Ticket for: ${user.tag} **||** Assigned to: ${assignee} **||** Opened: ${daysOld}`;
 
 //Generate permissionOverwrite Array. Returns type Array
 function categoryPerms(guild) {

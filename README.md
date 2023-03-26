@@ -100,6 +100,7 @@ Usage: [p]assign [@mention]
 }
 ```
 
+
 ## .env File Setup
 * Token is your Discord bot developer token
 * Set `DB_USER` and `DB_PASSWORD` to something secure and keep it safe.
@@ -124,6 +125,3 @@ DB_PASSWORD=
 
 ## Notes
 ![note example](https://i.imgur.com/wc3HlmN.png)
-
-# Last Notes
-PM2 has not been tested yet.

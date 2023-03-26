@@ -5,6 +5,7 @@
     "dotenv": "^16.0.0",
     "easy-json-database": "^1.5.0",
     "fs": "^0.0.1-security",
+    "inquirer": "^8.2.5",
     "path": "^0.12.7",
     "sequelize": "^6.16.1",
     "sqlite3": "^4.2.0"
