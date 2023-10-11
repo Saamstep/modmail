@@ -4,7 +4,7 @@
     "discord.js": "^13.6.0",
     "dotenv": "^16.0.0",
     "easy-json-database": "^1.5.0",
-    "fs": "^0.0.1-security",
+    "fs": "^0.0.2",
     "inquirer": "^8.2.5",
     "path": "^0.12.7",
     "sequelize": "^6.16.1",
