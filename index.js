@@ -180,6 +180,7 @@ client.on("messageCreate", async (message) => {
           if (cmd == false) helpText(c.name, c.args);
           break;
         case 1:
+          console.log(client.settings.get("writeAccess"));
           if (message.member.roles.cache.some((role) => client.settings.get("writeAccess").includes(role.id))) {
             let cmd = await c.execute(client, message, args, Tickets);
             if (cmd == false) helpText(c.name, c.args);
@@ -372,12 +373,14 @@ client.on("channelDelete", async (channel) => {
 
     let hudChannel = sGuild.channels.cache.get(client.settings.get("staffGuild").hudChannel);
 
+    await Tickets.destroy({ where: { member: receiver.id } });
+
     hudChannel.messages.fetch(thisTicket.get("hudID")).then((m) => {
       m.delete();
     });
 
     await guild.channels.cache.get(client.settings.get("logToStaff") ? client.settings.get("staffGuild").logChannel : client.settings.get("primaryGuild").logChannel).send({ embeds: [{ title: "Ticket Closed", description: `**${channel.name}** ticket closed.` }], files: [{ attachment: `./logs/${receiver.id}.log`, name: `${channel.name}-${Date.now()}.log`, description: "Modmail Ticket Log" }] });
-    await Tickets.destroy({ where: { member: receiver.id } });
+
     try {
       fs.unlinkSync(`./logs/${receiver.id}.log`, (err) => {
         if (err) return consola.error(`Unable to delete log file for ${channel.name}`);

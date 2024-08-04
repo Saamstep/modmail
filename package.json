@@ -14,7 +14,8 @@
   "version": "3.0.0",
   "main": "index.js",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "start": "node index.js",
+    "setup": "node scripts/setup.js"
   },
   "author": "",
   "license": "ISC",
